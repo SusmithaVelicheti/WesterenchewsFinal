@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "863760133801",
+    "firebase_url": "https://westerenchews-6868c.firebaseio.com",
+    "project_id": "westerenchews-6868c",
+    "storage_bucket": "westerenchews-6868c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:863760133801:android:7414faa922e274ff7103b8",
+        "android_client_info": {
+          "package_name": "com.example.westerenchews"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "863760133801-ngpi0fheatuo02tsrse1fcgm1h2665d4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsF6zVzuJJlxEHKuW10w4SYL9KtAqgNZs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "863760133801-ngpi0fheatuo02tsrse1fcgm1h2665d4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

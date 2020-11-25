@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Westerenchews</string>
+    <string name="not_registered_click_here_to_login">Not Registered?</string>
+    <string name="email">Email</string>
+    <string name="fname">First Name</string>
+    <string name="lname">Last Name</string>
+    <string name="address">Address</string>
+</resources>

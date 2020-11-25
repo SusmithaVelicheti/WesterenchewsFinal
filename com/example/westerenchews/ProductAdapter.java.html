@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>ProductAdapter.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ProductAdapter.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.westerenchews</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.app.Activity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.ViewGroup</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.RecyclerView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.bumptech.glide.Glide</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnFailureListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnSuccessListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.DocumentReference</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.FirebaseFirestore</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.HashMap</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.Map</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">ProductAdapter </span><span class="s0">extends </span><span class="s1">RecyclerView.Adapter &lt;ProductAdapter.MyViewHolder&gt;{</span>
+    <span class="s1">Activity activity</span><span class="s0">;</span>
+    <span class="s1">String userEmail</span><span class="s0">;</span>
+    <span class="s1">FirebaseFirestore db</span><span class="s0">;</span>
+    <span class="s1">ArrayList&lt;Product&gt; arrayList</span><span class="s0">;</span>
+    <span class="s1">Context context</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">ProductAdapter(Activity activity</span><span class="s0">, </span><span class="s1">ArrayList&lt;Product&gt; arrayList</span><span class="s0">, </span><span class="s1">String userEmail</span><span class="s0">, </span><span class="s1">FirebaseFirestore db) {</span>
+        <span class="s0">this</span><span class="s1">.activity = activity</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.arrayList = arrayList</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.userEmail = userEmail</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.db = db</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@NonNull</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">ProductAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent</span><span class="s0">, int </span><span class="s1">viewType) {</span>
+        <span class="s0">return new </span><span class="s1">MyViewHolder(activity.getLayoutInflater().inflate(R.layout.row_person</span><span class="s0">,</span><span class="s1">parent</span><span class="s0">,false</span><span class="s1">))</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onBindViewHolder(@NonNull </span><span class="s0">final </span><span class="s1">ProductAdapter.MyViewHolder holder</span><span class="s0">, int </span><span class="s1">position) {</span>
+        <span class="s1">holder.amount.setText(arrayList.get(position).getAmount())</span><span class="s0">;</span>
+        <span class="s1">holder.name.setText(arrayList.get(position).getName())</span><span class="s0">;</span>
+        <span class="s1">Glide.with(activity).load(arrayList.get(position).getImageurl()).into(holder.image)</span><span class="s0">;</span>
+        <span class="s1">holder.buynow.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">PlaceOrder(arrayList.get(holder.getAdapterPosition()).getId())</span><span class="s0">;</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public int </span><span class="s1">getItemCount() {</span>
+        <span class="s0">return </span><span class="s1">arrayList.size()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public class </span><span class="s1">MyViewHolder </span><span class="s0">extends </span><span class="s1">RecyclerView.ViewHolder {</span>
+        <span class="s1">TextView name</span><span class="s0">,</span><span class="s1">amount</span><span class="s0">,</span><span class="s1">buynow</span><span class="s0">;</span>
+        <span class="s1">ImageView image</span><span class="s0">;</span>
+        <span class="s0">public </span><span class="s1">MyViewHolder(@NonNull View itemView) {</span>
+            <span class="s0">super</span><span class="s1">(itemView)</span><span class="s0">;</span>
+            <span class="s1">context = itemView.getContext()</span><span class="s0">;</span>
+            <span class="s1">image = itemView.findViewById(R.id.image)</span><span class="s0">;</span>
+            <span class="s1">name = itemView.findViewById(R.id.name)</span><span class="s0">;</span>
+            <span class="s1">amount = itemView.findViewById(R.id.amount)</span><span class="s0">;</span>
+            <span class="s1">buynow = itemView.findViewById(R.id.buynow)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">PlaceOrder(String productid) {</span>
+        <span class="s1">Map&lt;String</span><span class="s0">, </span><span class="s1">Object&gt; user = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;()</span><span class="s0">;</span>
+        <span class="s1">user.put(</span><span class="s2">&quot;email&quot;</span><span class="s0">, </span><span class="s1">userEmail)</span><span class="s0">;</span>
+        <span class="s1">user.put(</span><span class="s2">&quot;productid&quot;</span><span class="s0">, </span><span class="s1">productid)</span><span class="s0">;</span>
+
+
+<span class="s3">// Add a new document with a generated ID</span>
+        <span class="s1">db.collection(</span><span class="s2">&quot;orders&quot;</span><span class="s1">)</span>
+                <span class="s1">.add(user)</span>
+                <span class="s1">.addOnSuccessListener(</span><span class="s0">new </span><span class="s1">OnSuccessListener&lt;DocumentReference&gt;() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onSuccess(DocumentReference documentReference) {</span>
+
+
+                        <span class="s1">Toast.makeText(activity</span><span class="s0">, </span><span class="s2">&quot;Order Placed&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                        <span class="s1">context.startActivity(</span><span class="s0">new </span><span class="s1">Intent(context</span><span class="s0">,</span><span class="s1">MainActivity.</span><span class="s0">class</span><span class="s1">))</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span>
+                <span class="s1">.addOnFailureListener(</span><span class="s0">new </span><span class="s1">OnFailureListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onFailure(@NonNull Exception e) {</span>
+                        <span class="s1">Toast.makeText(activity</span><span class="s0">, </span><span class="s2">&quot;Error&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

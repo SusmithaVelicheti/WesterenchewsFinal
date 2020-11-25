@@ -1,0 +1,96 @@
+<html>
+<head>
+<title>HomeActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+HomeActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.westerenchews</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.GridLayoutManager</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.LinearLayoutManager</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.RecyclerView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.app.ProgressDialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnCompleteListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnFailureListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnSuccessListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.Task</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.DocumentReference</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.FirebaseFirestore</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.QueryDocumentSnapshot</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.firestore.QuerySnapshot</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.HashMap</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.Map</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">HomeActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+    <span class="s1">String userEmail</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">FirebaseFirestore db</span><span class="s0">;</span>
+
+    <span class="s1">RecyclerView list</span><span class="s0">;</span>
+    <span class="s1">ArrayList&lt;Product&gt; arrayList= </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_home)</span><span class="s0">;</span>
+        <span class="s1">userEmail = getIntent().getExtras().getString(</span><span class="s2">&quot;email&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">list = findViewById(R.id.list)</span><span class="s0">;</span>
+
+        <span class="s1">db = FirebaseFirestore.getInstance()</span><span class="s0">;</span>
+        <span class="s1">list.setLayoutManager(</span><span class="s0">new </span><span class="s1">GridLayoutManager(getApplicationContext()</span><span class="s0">,</span><span class="s3">2</span><span class="s0">,</span><span class="s1">RecyclerView.VERTICAL</span><span class="s0">,false</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">list.setAdapter(</span><span class="s0">new </span><span class="s1">ProductAdapter(</span><span class="s0">this,</span><span class="s1">arrayList</span><span class="s0">,</span><span class="s1">userEmail</span><span class="s0">,</span><span class="s1">db))</span><span class="s0">;</span>
+
+        <span class="s1">getProducts()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+    <span class="s0">private void </span><span class="s1">getProducts() {</span>
+
+        <span class="s1">db.collection(</span><span class="s2">&quot;products&quot;</span><span class="s1">)</span>
+                <span class="s1">.get()</span>
+                <span class="s1">.addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;QuerySnapshot&gt;() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;QuerySnapshot&gt; task) {</span>
+                        <span class="s0">if </span><span class="s1">(task.isSuccessful()) {</span>
+                            <span class="s0">for </span><span class="s1">(QueryDocumentSnapshot document : task.getResult()) {</span>
+
+                                <span class="s1">Product product = </span><span class="s0">new </span><span class="s1">Product()</span><span class="s0">;</span>
+                                <span class="s1">product.setId(document.getId())</span><span class="s0">;</span>
+                                <span class="s1">product.setName(document.getString(</span><span class="s2">&quot;name&quot;</span><span class="s1">))</span><span class="s0">;</span>
+                                <span class="s1">product.setAmount(document.getString(</span><span class="s2">&quot;price&quot;</span><span class="s1">))</span><span class="s0">;</span>
+                                <span class="s1">product.setImageurl(document.getString(</span><span class="s2">&quot;imageurl&quot;</span><span class="s1">))</span><span class="s0">;</span>
+                                <span class="s1">arrayList.add(product)</span><span class="s0">;</span>
+
+
+                            <span class="s1">}</span>
+                            <span class="s1">list.getAdapter().notifyDataSetChanged()</span><span class="s0">;</span>
+
+
+                        <span class="s1">}</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+<span class="s1">}</span></pre>
+</body>
+</html>
